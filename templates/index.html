@@ -1,0 +1,24 @@
+{% extends "base.html"  %}
+
+{% block content %}
+    <form action="/" method="post">
+        {{ template_form.hidden_tag() }}
+
+        {{ template_form.question1.label }}
+        {{ template_form.question1() }}
+        <br>
+        {{ template_form.question2.label }}
+        {{ template_form.question2() }}
+        <br>
+        {{ template_form.question3.label }}
+        {{ template_form.question3() }}
+        <br>
+        {{ template_form.question4.label }}
+        {{ template_form.question4() }}
+        <br>
+        {{ template_form.address.label }}
+        {{ template_form.address() }}
+        <br>
+        {{ template_form.my_submit() }}
+    </form>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzSC7YFYyJlZbWrXcVv2yexwipoSqNzqw&v=weekly"></script>
+<p>{{route_data.guide_text | safe}}</p>
+<br>
+<div id="map"></div>
+<script>
+  let map;
+
+  function initMap() {
+    // The location of Uluru
+    const position = { lat: -25.344, lng: 131.031 };
+
+    var coords = {{route_data.text | safe}}
+    // Create the map object
+    map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 7,
+      center: position,
+    });
+
+    const directionsService = new google.maps.DirectionsService();
+    // Origin and destination coordinates
+    const origin = { lat: coords[0].lat, lng: coords[0].lng }; // START
+    const destination = { lat: coords[coords.length-1].lat, lng: coords[coords.length-1].lng }; // END
+    const waypoint1 = new google.maps.LatLng(coords[1].lat, coords[1].lng)
+
+    const request = {
+      origin: origin,
+      destination: destination,
+      travelMode: "DRIVING", 
+      waypoints: [{"location":coords[1]},{"location":coords[2]}], 
+      optimizeWaypoints: true,
+    };
+
+    directionsService.route(request, (response, status) => {
+      if (status === 'OK') {
+        const directions = response.routes[0]; // Assuming first route
+        const encodedPolyline = directions.overview_polyline;
+        console.log("Encoded Polyline:", encodedPolyline);
+
+        // You can use the encodedPolyline for further processing
+      } else {
+        console.error("Directions request failed:", status);
+      }
+    });
+
+    const directionsRenderer = new google.maps.DirectionsRenderer({
+      map: map, // Reference the actual map object
+    });
+
+    directionsService.route(request, (response, status) => {
+      if (status === 'OK') {
+        directionsRenderer.setDirections(response); // Set directions on renderer
+      } else {
+        console.error("Directions request failed:", status);
+      }
+    });
+  }
+
+  initMap();
+</script>
+
+<style>
+  #map {
+    height: 100vh; /* The height is 400 pixels */
+    width: 100%; /* The width is the width of the web page */
+  }
+</style>
+
+{% endblock %}
